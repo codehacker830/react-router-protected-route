@@ -48,7 +48,7 @@ export default function AuthExample() {
                     <LoginPage />
                 </Route>
                 <PrivateRoute path="/protected1" component={ProtectedPage1} />
-                <PrivateRoute path="/protected2"component={ProtectedPage2} />
+                <PrivateRoute path="/protected2" component={ProtectedPage2} />
             </Switch>
         </div>
         </Router>
@@ -88,11 +88,9 @@ function AuthButton() {
 
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
-function PrivateRoute({children, ...rest}) {
-    console.log("___ children ___", children)
-    console.log("___ rest ___", {...rest})
-    console.log("___ rest ___", rest)
-
+function PrivateRoute(props) {
+    console.log("props : ", props);
+    const {component : Component, ...rest} = props; 
     // There are props from Parent Component....
     // path: "/protected"
     // children: {$$typeof: Symbol(react.element), key: null, ref: null, props: {…}, type: ƒ, …}
@@ -101,17 +99,17 @@ function PrivateRoute({children, ...rest}) {
 
     return (
         <Route
-            {...rest}
+                // {...rest}
             render={(props) => {
-                console.log("___________ Route render props ___________", props);
-                console.log("___________ PrivateRoute location object___________", props.location);
+                console.log("Route render props : ", props);
+                console.log("PrivateRoute location : ", props.location);
                 return fakeAuth.isAuthenticated ? (
-                    children    
+                    <Component />
                 ) : (
                 <Redirect
                     to={{
-                    pathname: "/login",
-                    state: {pathname : props.location.pathname}
+                        pathname: "/login",
+                        from: {pathname : props.location.pathname}
                     }}
                 />
                 )
@@ -129,15 +127,17 @@ function ProtectedPage1() {
     return <h3>Protected page 1</h3>;
 }
 
-function ProtectedPage2() {
-    return <h3>Protected page 2</h3>;
+class ProtectedPage2 extends React.Component {
+    render() {
+        return <h3>Protected page 2</h3>;
+    }
 }
 
 function LoginPage() {
     let history = useHistory();
     let location = useLocation();
     console.log("___ redirected login page location from ___", location);
-    let from = location.state || { pathname: "/" };
+    let from = location.from || { pathname: "/" };
     let login = () => {
         fakeAuth.authenticate(() => {
             history.replace(from);
