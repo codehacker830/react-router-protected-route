@@ -47,12 +47,8 @@ export default function AuthExample() {
                 <Route path="/login">
                     <LoginPage />
                 </Route>
-                <PrivateRoute path="/protected1">
-                    <ProtectedPage1 />
-                </PrivateRoute>
-                <PrivateRoute path="/protected2">
-                    <ProtectedPage2 />
-                </PrivateRoute>
+                <PrivateRoute path="/protected1" component={ProtectedPage1} />
+                <PrivateRoute path="/protected2"component={ProtectedPage2} />
             </Switch>
         </div>
         </Router>
